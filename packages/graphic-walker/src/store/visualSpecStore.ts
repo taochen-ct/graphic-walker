@@ -1,4 +1,4 @@
-import { computed, makeAutoObservable, observable } from 'mobx';
+import {computed, makeAutoObservable, observable} from 'mobx';
 import {
     VisSpecWithHistory,
     convertChart,
@@ -14,9 +14,9 @@ import {
     redo,
     undo,
 } from '../models/visSpecHistory';
-import { emptyEncodings, forwardVisualConfigs, visSpecDecoder } from '../utils/save';
-import { feature } from 'topojson-client';
-import type { FeatureCollection } from 'geojson';
+import {emptyEncodings, forwardVisualConfigs, visSpecDecoder} from '../utils/save';
+import {feature} from 'topojson-client';
+import type {FeatureCollection} from 'geojson';
 import {
     DraggableFieldState,
     Filters,
@@ -41,20 +41,28 @@ import {
     IDefaultConfig,
     FieldIdentifier,
 } from '../interfaces';
-import { GLOBAL_CONFIG } from '../config';
-import { COUNT_FIELD_ID, DATE_TIME_DRILL_LEVELS, DATE_TIME_FEATURE_LEVELS, PAINT_FIELD_ID, MEA_KEY_ID, MEA_VAL_ID } from '../constants';
+import {GLOBAL_CONFIG} from '../config';
+import {
+    COUNT_FIELD_ID,
+    DATE_TIME_DRILL_LEVELS,
+    DATE_TIME_FEATURE_LEVELS,
+    PAINT_FIELD_ID,
+    MEA_KEY_ID,
+    MEA_VAL_ID
+} from '../constants';
 
-import { toWorkflow } from '../utils/workflow';
-import { KVTuple, uniqueId } from '../models/utils';
-import { INestNode } from '../components/pivotTable/inteface';
-import { getSort, getSortedEncoding } from '../utils';
-import { getSQLItemAnalyticType, parseSQLExpr } from '../lib/sql';
-import { IPaintMapAdapter } from '../lib/paint';
-import { toChatMessage } from '@/models/chat';
-import { viewEncodingKeys } from '@/models/visSpec';
-import { getAllFields, getViewEncodingFields } from './storeStateLib';
+import {toWorkflow} from '../utils/workflow';
+import {KVTuple, uniqueId} from '../models/utils';
+import {INestNode} from '../components/pivotTable/inteface';
+import {getSort, getSortedEncoding} from '../utils';
+import {getSQLItemAnalyticType, parseSQLExpr} from '../lib/sql';
+import {IPaintMapAdapter} from '../lib/paint';
+import {toChatMessage} from '@/models/chat';
+import {viewEncodingKeys} from '@/models/visSpec';
+import {getAllFields, getViewEncodingFields} from './storeStateLib';
 
 const encodingKeys = (Object.keys(emptyEncodings) as (keyof DraggableFieldState)[]).filter((dkey) => !GLOBAL_CONFIG.META_FIELD_KEYS.includes(dkey));
+
 export class VizSpecStore {
     visList: VisSpecWithHistory[];
     visIndex: number = 0;
@@ -64,7 +72,7 @@ export class VizSpecStore {
     segmentKey: ISegmentKey = ISegmentKey.vis;
     showInsightBoard: boolean = false;
     showDataBoard: boolean = false;
-    vizEmbededMenu: { show: boolean; position: [number, number] } = { show: false, position: [0, 0] };
+    vizEmbededMenu: { show: boolean; position: [number, number] } = {show: false, position: [0, 0]};
     showDataConfig: boolean = false;
     showCodeExportPanel: boolean = false;
     showVisualConfigPanel: boolean = false;
@@ -146,11 +154,11 @@ export class VizSpecStore {
     }
 
     get sort() {
-        return getSort({ columns: this.columns, rows: this.rows });
+        return getSort({columns: this.columns, rows: this.rows});
     }
 
     get sortedEncoding() {
-        return getSortedEncoding({ columns: this.columns, rows: this.rows });
+        return getSortedEncoding({columns: this.columns, rows: this.rows});
     }
 
     get allFields() {
@@ -166,8 +174,8 @@ export class VizSpecStore {
             ...this.currentVis.layout,
             ...(this.localGeoJSON
                 ? {
-                      geoJson: this.localGeoJSON,
-                  }
+                    geoJson: this.localGeoJSON,
+                }
                 : {}),
         };
     }
@@ -233,15 +241,15 @@ export class VizSpecStore {
 
     get paintFields() {
         if (!this.currentVis.config.defaultAggregated) {
-            const { columns, rows } = this.currentEncodings;
+            const {columns, rows} = this.currentEncodings;
             if (columns.length !== 1 || rows.length !== 1) {
-                return { type: 'error', key: 'count' } as const;
+                return {type: 'error', key: 'count'} as const;
             }
             const col = columns[0];
             const row = rows[0];
             // range on temporal need use a temporal Domain, which is not impemented
             if (col.semanticType === 'temporal' || row.semanticType === 'temporal') {
-                return { type: 'error', key: 'temporal' } as const;
+                return {type: 'error', key: 'temporal'} as const;
             }
             if (
                 col.aggName === 'expr' ||
@@ -253,7 +261,7 @@ export class VizSpecStore {
                 col.fid === PAINT_FIELD_ID ||
                 row.fid === PAINT_FIELD_ID
             ) {
-                return { type: 'error', key: 'count' } as const;
+                return {type: 'error', key: 'count'} as const;
             }
             return {
                 type: 'new',
@@ -261,9 +269,9 @@ export class VizSpecStore {
                 y: row,
             } as const;
         } else {
-            const { columns, rows, color, shape, size, opacity } = this.currentEncodings;
+            const {columns, rows, color, shape, size, opacity} = this.currentEncodings;
             if (columns.length !== 1 || rows.length !== 1) {
-                return { type: 'error', key: 'count' } as const;
+                return {type: 'error', key: 'count'} as const;
             }
             const col = columns[0];
             const row = rows[0];
@@ -277,7 +285,7 @@ export class VizSpecStore {
                 col.fid === PAINT_FIELD_ID ||
                 row.fid === PAINT_FIELD_ID
             ) {
-                return { type: 'error', key: 'count' } as const;
+                return {type: 'error', key: 'count'} as const;
             }
             const guard = (f?: IViewField) => (f?.fid === PAINT_FIELD_ID ? undefined : f);
             if (col.analyticType === 'dimension' && row.analyticType === 'dimension') {
@@ -421,7 +429,18 @@ export class VizSpecStore {
         this.visList[this.visIndex] = performers.reorderField(this.visList[this.visIndex], stateKey, sourceIndex, destinationIndex);
     }
 
-    moveField(sourceKey: keyof DraggableFieldState, sourceIndex: number, destinationKey: keyof DraggableFieldState, destinationIndex: number) {
+    searchKeyMapping: Record<`search-${'dimensions' | 'measures'}`, "dimensions" | "measures"> = {
+        'search-dimensions': 'dimensions',
+        'search-measures': 'measures',
+    };
+
+    moveField(sourceKey: keyof DraggableFieldState | `search-${'dimensions' | 'measures'}`, sourceIndex: number, destinationKey: keyof DraggableFieldState, destinationIndex: number) {
+
+        // sourceKey search
+        if (destinationKey.startsWith("search")) return;
+        if (sourceKey.startsWith("search") && ["dimensions", "measures"].includes(destinationKey)) return ;
+        sourceKey = (this.searchKeyMapping[sourceKey] ?? sourceKey) as  keyof DraggableFieldState;
+
         if (sourceKey === 'filters') {
             return this.removeField(sourceKey, sourceIndex);
         } else if (destinationKey === 'filters') {
@@ -508,7 +527,7 @@ export class VizSpecStore {
         if (!origianlField) {
             return;
         }
-        this.visList[this.visIndex] = performers.editAllField(this.visList[this.visIndex], origianlField.fid, { name: newName });
+        this.visList[this.visIndex] = performers.editAllField(this.visList[this.visIndex], origianlField.fid, {name: newName});
     }
 
     public createDateTimeDrilledField(
@@ -622,25 +641,32 @@ export class VizSpecStore {
     setShowDataConfig(show: boolean) {
         this.showDataConfig = show;
     }
+
     setShowInsightBoard(show: boolean) {
         this.showInsightBoard = show;
     }
+
     setShowDataBoard(show: boolean) {
         this.showDataBoard = show;
     }
+
     showEmbededMenu(position: [number, number]) {
         this.vizEmbededMenu.show = true;
         this.vizEmbededMenu.position = position;
     }
+
     setShowCodeExportPanel(show: boolean) {
         this.showCodeExportPanel = show;
     }
+
     setShowVisualConfigPanel(show: boolean) {
         this.showVisualConfigPanel = show;
     }
+
     closeEmbededMenu() {
         this.vizEmbededMenu.show = false;
     }
+
     setFilters(props: Filters) {
         this.filters = props;
     }
@@ -695,7 +721,7 @@ export class VizSpecStore {
     }
 
     updateTableCollapsedHeader(node: INestNode) {
-        const { uniqueKey, height } = node;
+        const {uniqueKey, height} = node;
         if (height < 1) return;
         const updatedMap = new Map(this.tableCollapsedHeaderMap);
         // if some child nodes of the incoming node are collapsed, remove them first
@@ -773,8 +799,8 @@ export class VizSpecStore {
                 name,
                 analyticType,
                 semanticType,
-                ...(preAggName !== newAggName ? { aggName: newAggName } : {}),
-                expression: { as: fid, op: 'expr', params: [{ type: 'sql', value: sql }] },
+                ...(preAggName !== newAggName ? {aggName: newAggName} : {}),
+                expression: {as: fid, op: 'expr', params: [{type: 'sql', value: sql}]},
             });
         }
     }
