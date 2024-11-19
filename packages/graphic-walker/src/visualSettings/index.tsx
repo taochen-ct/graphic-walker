@@ -481,6 +481,7 @@ const VisualSettings: React.FC<IVisualSettings> = ({ rendererHandler, csvHandler
                                 mode: 'fixed',
                                 height: v,
                                 width: layout.size.width,
+                                maxSliderStep: maxSliderStep
                             });
                         }}
                         onWidthChange={(v) => {
@@ -488,6 +489,7 @@ const VisualSettings: React.FC<IVisualSettings> = ({ rendererHandler, csvHandler
                                 mode: 'fixed',
                                 width: v,
                                 height: layout.size.height,
+                                maxSliderStep: maxSliderStep
                             });
                         }}
                         maxSliderStep={maxSliderStep}
