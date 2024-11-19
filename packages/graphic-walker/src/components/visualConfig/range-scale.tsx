@@ -1,10 +1,99 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
-import { Slider } from '../../components/rangeslider';
-import { Checkbox } from '../ui/checkbox';
-import { Label } from '../ui/label';
-import { NumberInput } from '../ui/number-input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
+import {useTranslation} from 'react-i18next';
+import {Slider} from '../../components/rangeslider';
+import {Checkbox} from '../ui/checkbox';
+import {Label} from '../ui/label';
+import {NumberInput} from '../ui/number-input';
+import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from '../ui/select';
+
+const RangeSlider = (props: {
+    text: string;
+    enableRange: boolean;
+    maxRange: number;
+    minRange: number;
+    rangeMax: number;
+    rangeMin: number;
+    setRangeMin: (v: number) => void;
+    setRangeMax: (v: number) => void;
+    setEnableRange: (v: boolean) => void;
+}) => {
+    const {t} = useTranslation();
+
+    return <div className="flex flex-col items-start w-48 space-y-2">
+        <div className="flex items-center space-x-2">
+            <Checkbox id={`range_${props.text}`} checked={props.enableRange} onCheckedChange={props.setEnableRange}/>
+            <Label htmlFor={`range_${props.text}`}>{t('config.range')}</Label>
+        </div>
+        <div className="flex w-full flex-col space-y-2 pt-2">
+            <Slider
+                disabled={!props.enableRange}
+                max={props.maxRange}
+                min={props.minRange}
+                value={[props.rangeMin, props.rangeMax]}
+                onValueChange={([min, max]) => {
+                    props.setRangeMin(min);
+                    props.setRangeMax(max);
+                }}
+                step={props.maxRange < 2 ? 0.01 : 1}
+            />
+            <div className="relative w-full h-4">
+                <div
+                    className="text-xs absolute left-0 text-foreground inset-y-0">{props.rangeMin}</div>
+                <div
+                    className="text-xs absolute right-0 text-foreground inset-y-0">{props.rangeMax}</div>
+            </div>
+        </div>
+    </div>
+}
+
+
+const RangeInput = (props: {
+    text: string;
+    enableRange: boolean;
+    maxRange: number;
+    minRange: number;
+    rangeMax: number;
+    rangeMin: number;
+    setRangeMin: (v: number) => void;
+    setRangeMax: (v: number) => void;
+    setEnableRange: (v: boolean) => void;
+}) => {
+    const {t} = useTranslation();
+
+    return <div className="flex flex-col space-y-2 items-start">
+        <div className="flex items-center space-x-2">
+            <Checkbox id={`range_${props.text}`} checked={props.enableRange}
+                      onCheckedChange={props.setEnableRange}/>
+            <Label htmlFor={`range_${props.text}`}>{t('config.range')}</Label>
+        </div>
+        <div className="flex items-center space-x-2">
+            <NumberInput
+                className="w-32"
+                value={props.minRange}
+                onChange={(e) => {
+                    const v = Number(e.target.value);
+                    if (!isNaN(v)) {
+                        props.setRangeMin(v);
+                    }
+                }}
+                type="number"
+                disabled={!props.enableRange}
+            />
+            <NumberInput
+                className="w-32"
+                value={props.maxRange}
+                onChange={(e) => {
+                    const v = Number(e.target.value);
+                    if (!isNaN(v)) {
+                        props.setRangeMax(v);
+                    }
+                }}
+                type="number"
+                disabled={!props.enableRange}
+            />
+        </div>
+    </div>
+}
 
 export function RangeScale(props: {
     text: string;
@@ -28,19 +117,21 @@ export function RangeScale(props: {
     setRangeMin: (v: number) => void;
     setRangeMax: (v: number) => void;
     setType: (v: 'linear' | 'log' | 'pow' | 'sqrt' | 'symlog') => void;
+    isSlider: boolean;
 }) {
-    const { t } = useTranslation();
+    const {t} = useTranslation();
 
     return (
         <div className="flex md:flex-row flex-col gap-6 my-2">
             <div className="flex flex-col space-y-2 items-start">
                 <div className="flex items-center space-x-2">
-                    <Checkbox id={`type_${props.text}`} checked={props.enableType} onCheckedChange={props.setEnableType} />
+                    <Checkbox id={`type_${props.text}`} checked={props.enableType}
+                              onCheckedChange={props.setEnableType}/>
                     <Label htmlFor={`type_${props.text}`}>{t('config.type')}</Label>
                 </div>
                 <Select value={props.type} disabled={!props.enableType} onValueChange={props.setType}>
                     <SelectTrigger>
-                        <SelectValue />
+                        <SelectValue/>
                     </SelectTrigger>
                     <SelectContent>
                         <SelectItem value="linear">Linear</SelectItem>
@@ -54,7 +145,8 @@ export function RangeScale(props: {
 
             <div className="flex flex-col space-y-2 items-start">
                 <div className="flex items-center space-x-2">
-                    <Checkbox id={`min_domain_${props.text}`} checked={props.enableMinDomain} onCheckedChange={props.setEnableMinDomain} />
+                    <Checkbox id={`min_domain_${props.text}`} checked={props.enableMinDomain}
+                              onCheckedChange={props.setEnableMinDomain}/>
                     <Label htmlFor={`min_domain_${props.text}`}>{t('config.min_domain')}</Label>
                 </div>
                 <NumberInput
@@ -72,7 +164,8 @@ export function RangeScale(props: {
             </div>
             <div className="flex flex-col space-y-2 items-start">
                 <div className="flex items-center space-x-2">
-                    <Checkbox id={`max_domain_${props.text}`} checked={props.enableMaxDomain} onCheckedChange={props.setEnableMaxDomain} />
+                    <Checkbox id={`max_domain_${props.text}`} checked={props.enableMaxDomain}
+                              onCheckedChange={props.setEnableMaxDomain}/>
                     <Label htmlFor={`max_domain_${props.text}`}>{t('config.max_domain')}</Label>
                 </div>
                 <NumberInput
@@ -88,32 +181,14 @@ export function RangeScale(props: {
                     disabled={!props.enableMaxDomain}
                 />
             </div>
-            <div className="flex flex-col items-start w-48 space-y-2">
-                <div className="flex items-center space-x-2">
-                    <Checkbox id={`range_${props.text}`} checked={props.enableRange} onCheckedChange={props.setEnableRange} />
-                    <Label htmlFor={`range_${props.text}`}>{t('config.range')}</Label>
-                </div>
-                <div className="flex w-full flex-col space-y-2 pt-2">
-                    <Slider
-                        disabled={!props.enableRange}
-                        max={props.maxRange}
-                        min={props.minRange}
-                        value={[props.rangeMin, props.rangeMax]}
-                        onValueChange={([min, max]) => {
-                            props.setRangeMin(min);
-                            props.setRangeMax(max);
-                        }}
-                        step={props.maxRange < 2 ? 0.01 : 1}
-                    />
-                    <div className="relative w-full h-4">
-                        <div className="text-xs absolute left-0 text-foreground inset-y-0">{props.rangeMin}</div>
-                        <div className="text-xs absolute right-0 text-foreground inset-y-0">{props.rangeMax}</div>
-                    </div>
-                </div>
-            </div>
+            {
+                props.isSlider ? <RangeSlider {...props}/> : <RangeInput {...props}/>
+            }
+
         </div>
     );
 }
+
 
 export function DomainScale(props: {
     text: string;
@@ -130,18 +205,19 @@ export function DomainScale(props: {
     setDomainMax: (v: number) => void;
     setType: (v: 'linear' | 'log' | 'pow' | 'sqrt' | 'symlog') => void;
 }) {
-    const { t } = useTranslation();
+    const {t} = useTranslation();
 
     return (
         <div className="flex md:flex-row flex-col gap-6 my-2">
             <div className="flex flex-col space-y-2 items-start">
                 <div className="flex items-center space-x-2">
-                    <Checkbox id={`type_${props.text}`} checked={props.enableType} onCheckedChange={props.setEnableType} />
+                    <Checkbox id={`type_${props.text}`} checked={props.enableType}
+                              onCheckedChange={props.setEnableType}/>
                     <Label htmlFor={`type_${props.text}`}>{t('config.type')}</Label>
                 </div>
                 <Select value={props.type} disabled={!props.enableType} onValueChange={props.setType}>
                     <SelectTrigger>
-                        <SelectValue />
+                        <SelectValue/>
                     </SelectTrigger>
                     <SelectContent>
                         <SelectItem value="linear">Linear</SelectItem>
@@ -155,7 +231,8 @@ export function DomainScale(props: {
 
             <div className="flex flex-col space-y-2 items-start">
                 <div className="flex items-center space-x-2">
-                    <Checkbox id={`min_domain_${props.text}`} checked={props.enableMinDomain} onCheckedChange={props.setEnableMinDomain} />
+                    <Checkbox id={`min_domain_${props.text}`} checked={props.enableMinDomain}
+                              onCheckedChange={props.setEnableMinDomain}/>
                     <Label htmlFor={`min_domain_${props.text}`}>{t('config.min_domain')}</Label>
                 </div>
                 <NumberInput
@@ -173,7 +250,8 @@ export function DomainScale(props: {
             </div>
             <div className="flex flex-col space-y-2 items-start">
                 <div className="flex items-center space-x-2">
-                    <Checkbox id={`max_domain_${props.text}`} checked={props.enableMaxDomain} onCheckedChange={props.setEnableMaxDomain} />
+                    <Checkbox id={`max_domain_${props.text}`} checked={props.enableMaxDomain}
+                              onCheckedChange={props.setEnableMaxDomain}/>
                     <Label htmlFor={`max_domain_${props.text}`}>{t('config.max_domain')}</Label>
                 </div>
                 <NumberInput

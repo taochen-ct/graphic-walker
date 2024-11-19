@@ -393,13 +393,13 @@ const VisualConfigPanel: React.FC = () => {
                                 {scalesSet.has('opacity') && (
                                     <div>
                                         <label className="block text-xs font-medium leading-6">{t('config.opacity')}</label>
-                                        <RangeScale {...opacityValue} text="opacity" maxRange={1} minRange={0} />
+                                        <RangeScale {...opacityValue} text="opacity" maxRange={1} minRange={0} isSlider={true} />
                                     </div>
                                 )}
                                 {scalesSet.has('size') && (
                                     <div>
                                         <label className="block text-xs font-medium leading-6">{t('config.size')}</label>
-                                        <RangeScale {...sizeValue} text="size" maxRange={100} minRange={0} />
+                                        <RangeScale {...sizeValue} text="size" maxRange={100} minRange={0} isSlider={false}/>
                                     </div>
                                 )}
                             </ConfigItemContent>
