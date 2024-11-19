@@ -69,7 +69,7 @@ const RangeInput = (props: {
         <div className="flex items-center space-x-2">
             <NumberInput
                 className="w-32"
-                value={props.minRange}
+                value={props.rangeMin ?? props.minRange}
                 onChange={(e) => {
                     const v = Number(e.target.value);
                     if (!isNaN(v)) {
@@ -81,7 +81,7 @@ const RangeInput = (props: {
             />
             <NumberInput
                 className="w-32"
-                value={props.maxRange}
+                value={props.rangeMax ?? props.maxRange}
                 onChange={(e) => {
                     const v = Number(e.target.value);
                     if (!isNaN(v)) {
