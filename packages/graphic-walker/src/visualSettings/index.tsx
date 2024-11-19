@@ -77,7 +77,7 @@ const VisualSettings: React.FC<IVisualSettings> = ({ rendererHandler, csvHandler
         showTableSummary,
         stack,
         interactiveScale,
-        size: { mode: sizeMode, width, height },
+        size: { mode: sizeMode, width, height, maxSliderStep},
         showActions,
     } = layout;
 
@@ -490,6 +490,7 @@ const VisualSettings: React.FC<IVisualSettings> = ({ rendererHandler, csvHandler
                                 height: layout.size.height,
                             });
                         }}
+                        maxSliderStep={maxSliderStep}
                     />
                 ),
             },
