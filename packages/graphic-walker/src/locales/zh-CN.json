@@ -246,7 +246,8 @@
                 }
             },
             "DatasetFields": {
-                "field_list": "字段列表"
+                "field_list": "字段列表",
+                "field_search": "字段搜索"
             }
         }
     },

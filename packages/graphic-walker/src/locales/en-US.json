@@ -251,7 +251,8 @@
                 }
             },
             "DatasetFields": {
-                "field_list": "Field List"
+                "field_list": "Field List",
+                "field_search": "Field Search"
             }
         }
     },

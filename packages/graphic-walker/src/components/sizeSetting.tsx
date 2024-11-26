@@ -10,16 +10,18 @@ interface SizeSettingProps {
     width: number;
     height: number;
     children?: React.ReactNode | Iterable<React.ReactNode>;
+    maxSliderStep?: number
 }
 
 export const ResizeDialog: React.FC<SizeSettingProps> = (props) => {
-    const { onWidthChange, onHeightChange, width, height, children } = props;
+    const { onWidthChange, onHeightChange, width, height, children , maxSliderStep} = props;
     const { t } = useTranslation('translation', { keyPrefix: 'main.tabpanel.settings.size_setting' });
     const [innerWidth, setInnerWidth] = useDebounceValueBind(width, onWidthChange);
     const [innerHeight, setInnerHeight] = useDebounceValueBind(height, onHeightChange);
 
     const sliderWidthValue = useMemo(() => [Math.sqrt(innerWidth / 1000)], [innerWidth]);
     const sliderHeightValue = useMemo(() => [Math.sqrt(innerHeight / 1000)], [innerHeight]);
+    const defaultSlider = 1
 
     return (
         <div className="w-60 p-2">
@@ -27,7 +29,7 @@ export const ResizeDialog: React.FC<SizeSettingProps> = (props) => {
             <div className="mt-4">
                 <Slider
                     min={0}
-                    max={1}
+                    max={maxSliderStep ?? defaultSlider}
                     step={0.01}
                     name="width"
                     className="w-full"
@@ -39,7 +41,7 @@ export const ResizeDialog: React.FC<SizeSettingProps> = (props) => {
             <div className="mt-4">
                 <Slider
                     min={0}
-                    max={1}
+                    max={maxSliderStep ?? defaultSlider}
                     step={0.01}
                     name="height"
                     className="w-full"

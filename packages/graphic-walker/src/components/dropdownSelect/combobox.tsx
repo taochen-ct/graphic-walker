@@ -24,7 +24,7 @@ function Combobox({
         <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
                 <Button variant="outline" role="combobox" aria-expanded={open} className={cn('flex justify-between', className)}>
-                    <div className="shrink min-w-[0px] overflow-hidden text-ellipsis whitespace-nowrap">
+                    <div className="shrink min-w-[0px] max-w-[700px] overflow-hidden text-ellipsis whitespace-nowrap">
                         {options.find((opt) => opt.value === selectedKey)?.label ?? placeholder}
                     </div>
                     <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />

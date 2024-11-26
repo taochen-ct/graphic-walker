@@ -428,6 +428,7 @@ export interface IVisualLayout {
         mode: 'auto' | 'fixed' | 'full';
         width: number;
         height: number;
+        maxSliderStep?: number;
     };
     useSvg?: boolean;
     geojson?: FeatureCollection<Geometry, GeoJsonProperties>;

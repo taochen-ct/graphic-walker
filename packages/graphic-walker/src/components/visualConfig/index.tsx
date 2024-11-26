@@ -160,7 +160,7 @@ const VisualConfigPanel: React.FC = () => {
     const columnValue = useDomainScale();
     const rowValue = useDomainScale();
     const colorValue = useDomainScale();
-    const thetaValue = useDomainScale();
+    const thetaValue = useScale(0, 1);
     const radiusValue = useDomainScale();
     const opacityValue = useScale(0, 1, 0.3, 0.8);
     const sizeValue = useScale(0, 100);
@@ -381,7 +381,7 @@ const VisualConfigPanel: React.FC = () => {
                                 {scalesSet.has('theta') && (
                                     <div>
                                         <label className="block text-xs font-medium leading-6">{t('config.theta')}</label>
-                                        <DomainScale {...thetaValue} text="theta" />
+                                        <RangeScale {...thetaValue} text="theta" maxRange={100} minRange={0} isSlider={false} />
                                     </div>
                                 )}
                                 {scalesSet.has('radius') && (
@@ -393,13 +393,13 @@ const VisualConfigPanel: React.FC = () => {
                                 {scalesSet.has('opacity') && (
                                     <div>
                                         <label className="block text-xs font-medium leading-6">{t('config.opacity')}</label>
-                                        <RangeScale {...opacityValue} text="opacity" maxRange={1} minRange={0} />
+                                        <RangeScale {...opacityValue} text="opacity" maxRange={1} minRange={0} isSlider={true} />
                                     </div>
                                 )}
                                 {scalesSet.has('size') && (
                                     <div>
                                         <label className="block text-xs font-medium leading-6">{t('config.size')}</label>
-                                        <RangeScale {...sizeValue} text="size" maxRange={100} minRange={0} />
+                                        <RangeScale {...sizeValue} text="size" maxRange={100} minRange={0} isSlider={false}/>
                                     </div>
                                 )}
                             </ConfigItemContent>
